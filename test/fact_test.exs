@@ -1,8 +1,10 @@
 defmodule FactTest do
   use ExUnit.Case
-  doctest Fact
+  use Fact
 
-  test "greets the world" do
-    assert Fact.hello() == :world
+  describe "__using__/1" do
+    test "false" do
+      assert false
+    end
   end
 end
