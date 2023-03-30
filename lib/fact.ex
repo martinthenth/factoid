@@ -3,28 +3,27 @@ defmodule Fact do
   Documentation for `Fact`.
   """
 
+  @typedoc false
+  @type factory_name :: atom()
+
+  @typedoc false
+  @type field :: atom()
+
+  @typedoc false
+  @type attrs :: map() | keyword()
+
+  @callback build(factory_name()) :: term()
+  @callback build(factory_name(), attrs()) :: term()
+
+  @doc false
   defmacro __using__(opts) do
     quote bind_quoted: [opts: opts] do
+      import Fact, only: [fixture: 1, fixture: 2]
+
       @repo Keyword.get(opts, :repo)
 
       @doc """
-      Generate a systemically unique integer.
-      """
-      @spec unique_integer :: non_neg_integer()
-      def unique_integer, do: System.unique_integer([:positive])
-
-      @doc """
-      Builds a fixture for a record that will be inserted later.
-      """
-      def fixture(name), do: {:fixture, name}
-
-      @doc """
-      Builds a fixture for a record that will be inserted later.
-      """
-      def fixture(name, field), do: {:fixture, name, field}
-
-      @doc """
-      Inserts the fixture.
+      Inserts the record.
       """
       @spec insert(atom(), map() | keyword()) :: struct()
       def insert(name, attrs \\ %{})
@@ -52,7 +51,7 @@ defmodule Fact do
       end
 
       @doc """
-      Inserts the list of fixtures.
+      Inserts the list of records.
       """
       @spec insert_all(atom, [map()]) :: [struct()]
       def insert_all(name, list_of_attrs \\ []) do
@@ -73,6 +72,38 @@ defmodule Fact do
         |> @repo.insert_all(list_of_attrs, placeholders: placeholders, returning: true)
         |> elem(1)
       end
+
+      @doc """
+      Generates a systemically unique integer.
+      """
+      @spec unique_integer :: non_neg_integer()
+      def unique_integer, do: System.unique_integer([:positive])
+
+      @spec insert_and_get(atom()) :: term()
+      defp insert_and_get(name) do
+        name
+        |> insert()
+        |> Map.get(:id)
+      end
+
+      @spec insert_and_get(atom(), atom()) :: term()
+      defp insert_and_get(name, field) do
+        name
+        |> insert()
+        |> Map.get(field)
+      end
     end
   end
+
+  @doc """
+  Builds a fixture for a record to be inserted.
+  """
+  @spec fixture(factory_name()) :: {:fixture, factory_name()}
+  def fixture(name), do: {:fixture, name}
+
+  @doc """
+  Builds a fixture for a record to be inserted.
+  """
+  @spec fixture(factory_name(), field()) :: {:fixture, factory_name(), field()}
+  def fixture(name, field), do: {:fixture, name, field}
 end
