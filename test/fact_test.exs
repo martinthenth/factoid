@@ -70,19 +70,13 @@ defmodule FactTest do
 
   describe "fixture/1" do
     test "false" do
-      assert fixture(:user) == {:fixture, :user}
+      assert Fact.fixture(:user) == {:fixture, :user}
     end
   end
 
   describe "fixture/2" do
     test "false" do
-      assert fixture(:user, name: "Jane") == {:fixture, :user, name: "Jane"}
-    end
-  end
-
-  describe "unique_integer/0" do
-    test "generates an integer" do
-      assert is_integer(unique_integer())
+      assert Fact.fixture(:user, name: "Jane") == {:fixture, :user, name: "Jane"}
     end
   end
 end
