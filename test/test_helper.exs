@@ -1,3 +1,4 @@
+Fact.Repo.start_link()
 ExUnit.start()
 
 defmodule Fact.Schemas.User do
