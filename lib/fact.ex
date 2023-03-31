@@ -33,7 +33,7 @@ defmodule Fact do
   @doc false
   defmacro __using__(opts) do
     quote bind_quoted: [opts: opts] do
-      import Fact, only: [fixture: 1, fixture: 2, unique_integer: 0]
+      import Fact
 
       @repo Keyword.get(opts, :repo)
 
@@ -80,6 +80,12 @@ defmodule Fact do
         insert(factory_name, Map.new(attrs))
       end
 
+      @doc """
+      Generates a systemically unique integer.
+      """
+      @spec unique_integer :: non_neg_integer()
+      def unique_integer, do: System.unique_integer([:positive])
+
       @spec insert_and_get(factory_name(), field()) :: value()
       defp insert_and_get(factory_name, field \\ :id) do
         factory_name
@@ -100,10 +106,4 @@ defmodule Fact do
   """
   @spec fixture(factory_name(), field()) :: {:fixture, factory_name(), field()}
   def fixture(factory_name, field), do: {:fixture, factory_name, field}
-
-  @doc """
-  Generates a systemically unique integer.
-  """
-  @spec unique_integer :: non_neg_integer()
-  def unique_integer, do: System.unique_integer([:positive])
 end
