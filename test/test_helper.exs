@@ -4,8 +4,6 @@ ExUnit.start()
 defmodule Fact.Schemas.User do
   use Ecto.Schema
 
-  alias Ecto.UUID
-
   @primary_key {:id, :binary_id, autogenerate: true}
   @foreign_key_type :binary_id
   @timestamps_opts [type: :utc_datetime_usec, inserted_at: :created_at]
@@ -21,14 +19,15 @@ end
 defmodule Fact.Schemas.Employee do
   use Ecto.Schema
 
-  alias Ecto.UUID
+  alias Fact.Schemas.User
 
   @primary_key {:id, :binary_id, autogenerate: true}
   @foreign_key_type :binary_id
   @timestamps_opts [type: :utc_datetime_usec, inserted_at: :created_at]
 
   schema "employees" do
-    field(:user_id, UUID)
+    belongs_to(:user, User)
+
     field(:role, :string)
 
     timestamps()

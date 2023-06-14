@@ -59,26 +59,14 @@ defmodule Fact do
       def insert(factory_name, attrs \\ %{})
 
       def insert(factory_name, attrs) when is_map(attrs) do
-        struct = build(factory_name, attrs)
-
-        struct
-        |> Map.to_list()
-        |> Enum.reduce(struct, fn
-          {field, {:fixture, inner_factory_name}}, acc ->
-            Map.put(acc, field, insert_and_get(inner_factory_name))
-
-          {field, {:fixture, inner_factory_name, inner_field}}, acc ->
-            Map.put(acc, field, insert_and_get(inner_factory_name, inner_field))
-
-          {field, value}, acc ->
-            acc
-        end)
+        factory_name
+        |> build(attrs)
         |> @repo.insert!(returning: true)
+        |> clear_associations()
       end
 
-      def insert(factory_name, attrs) when is_list(attrs) do
-        insert(factory_name, Map.new(attrs))
-      end
+      def insert(factory_name, attrs) when is_list(attrs),
+        do: insert(factory_name, Map.new(attrs))
 
       @doc """
       Generates a systemically unique integer.
@@ -86,24 +74,32 @@ defmodule Fact do
       @spec unique_integer :: non_neg_integer()
       def unique_integer, do: System.unique_integer([:positive])
 
-      @spec insert_and_get(factory_name(), field()) :: value()
-      defp insert_and_get(factory_name, field \\ :id) do
-        factory_name
-        |> insert()
-        |> Map.get(field)
-      end
+      @doc """
+      Generates an UUID.
+      """
+      @spec unique_uuid :: Ecto.UUID.t()
+      def unique_uuid, do: Ecto.UUID.generate()
     end
   end
 
-  @doc """
-  Builds a fixture for a record and returns the value of the primary key.
-  """
-  @spec fixture(factory_name()) :: {:fixture, factory_name()}
-  def fixture(factory_name), do: {:fixture, factory_name}
+  def clear_associations(%{__struct__: struct} = schema) do
+    struct.__schema__(:associations)
+    |> Enum.reduce(schema, fn association, schema ->
+      %{schema | association => build_not_loaded(struct, association)}
+    end)
+  end
 
-  @doc """
-  Builds a fixture for a record and returns the value of the field.
-  """
-  @spec fixture(factory_name(), field()) :: {:fixture, factory_name(), field()}
-  def fixture(factory_name, field), do: {:fixture, factory_name, field}
+  defp build_not_loaded(struct, association) do
+    %{
+      cardinality: cardinality,
+      field: field,
+      owner: owner
+    } = struct.__schema__(:association, association)
+
+    %Ecto.Association.NotLoaded{
+      __cardinality__: cardinality,
+      __field__: field,
+      __owner__: owner
+    }
+  end
 end
