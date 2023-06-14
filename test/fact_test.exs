@@ -24,7 +24,7 @@ defmodule FactTest do
 
   def build(:employee, attrs) do
     %Employee{
-      user_id: fixture(:user),
+      user: build(:user),
       role: "admin"
     }
     |> Map.merge(attrs)
@@ -38,6 +38,8 @@ defmodule FactTest do
       assert user.age == 28
       assert user.created_at
       assert user.updated_at
+
+      assert user == Repo.get(User, user.id)
     end
 
     test "insert/2 - creates a record with the given attributes" do
@@ -47,13 +49,18 @@ defmodule FactTest do
       assert user.age == 32
       assert user.created_at
       assert user.updated_at
+
+      assert user == Repo.get(User, user.id)
     end
 
-    test "insert/2 - creates a record with a fixture" do
+    test "insert/2 - creates a record with an association" do
       employee = insert(:employee)
 
       assert employee.user_id
+      assert %Ecto.Association.NotLoaded{} = employee.user
       assert %User{} = Repo.get(User, employee.user_id)
+
+      assert employee == Repo.get(Employee, employee.id)
     end
 
     test "insert/2 - overwrites the id" do
@@ -61,22 +68,39 @@ defmodule FactTest do
       user = insert(:user, id: id)
 
       assert user.id == id
+      assert user == Repo.get(User, id)
+    end
+
+    test "insert/2 - overwrites the association" do
+      employee = insert(:employee, user: build(:user))
+
+      assert employee.user_id
+      assert %Ecto.Association.NotLoaded{} = employee.user
+      assert %User{} = Repo.get(User, employee.user_id)
+    end
+
+    test "insert/2 - overwrites the association with an existing record" do
+      user = insert(:user)
+      employee = insert(:employee, user: user)
+
+      assert employee.user_id
+      assert %Ecto.Association.NotLoaded{} = employee.user
+      assert user == Repo.get(User, employee.user_id)
+    end
+
+    test "insert/2 - raises on overwriting the association's id" do
+      assert_raise ArgumentError, fn ->
+        user = insert(:user)
+        _employee = insert(:employee, user_id: user.id)
+      end
     end
 
     test "unique_integer/0 - generates an integer" do
       assert is_integer(unique_integer())
     end
-  end
 
-  describe "fixture/1" do
-    test "false" do
-      assert Fact.fixture(:user) == {:fixture, :user}
-    end
-  end
-
-  describe "fixture/2" do
-    test "false" do
-      assert Fact.fixture(:user, name: "Jane") == {:fixture, :user, name: "Jane"}
+    test "unique_uuid/0 - generates an UUID" do
+      assert is_binary(unique_uuid())
     end
   end
 end
