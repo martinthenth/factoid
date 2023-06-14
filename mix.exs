@@ -40,7 +40,8 @@ defmodule Factoid.MixProject do
     [
       maintainers: ["Martin Nijboer"],
       licenses: ["MIT"],
-      links: %{"GitHub" => @source_url, "Changelog" => @changelog_url}
+      links: %{"GitHub" => @source_url, "Changelog" => @changelog_url},
+      files: ~w(lib .formatter.exs mix.exs README* LICENSE* CHANGELOG*)
     ]
   end
 
