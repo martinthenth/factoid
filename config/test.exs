@@ -1,14 +1,14 @@
 import Config
 
-config :fact,
-  ecto_repos: [Fact.Repo],
+config :factoid,
+  ecto_repos: [Factoid.Repo],
   generators: [binary_id: true]
 
-config :fact, Fact.Repo,
+config :factoid, Factoid.Repo,
   username: "postgres",
   password: "postgres",
   hostname: "localhost",
-  database: "fact_test#{System.get_env("MIX_TEST_PARTITION")}",
+  database: "factoid_test#{System.get_env("MIX_TEST_PARTITION")}",
   pool: Ecto.Adapters.SQL.Sandbox,
   pool_size: 10,
   migration_primary_key: [type: :binary_id],

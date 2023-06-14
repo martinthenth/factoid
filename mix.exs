@@ -1,13 +1,13 @@
-defmodule Fact.MixProject do
+defmodule Factoid.MixProject do
   use Mix.Project
 
-  @version "0.2.0"
-  @source_url "https://github.com/martinthenth/fact"
-  @changelog_url "https://github.com/martinthenth/fact/blob/main/CHANGELOG.md"
+  @version "0.1.0"
+  @source_url "https://github.com/recruiterbay/factoid"
+  @changelog_url "https://github.com/recruiterbay/factoid/blob/main/CHANGELOG.md"
 
   def project do
     [
-      app: :fact,
+      app: :factoid,
       version: @version,
       elixir: "~> 1.13",
       start_permanent: Mix.env() == :prod,
@@ -46,7 +46,7 @@ defmodule Fact.MixProject do
 
   defp docs do
     [
-      main: "Fact",
+      main: "Factoid",
       extras: ["README.md"]
     ]
   end

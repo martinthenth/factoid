@@ -1,11 +1,11 @@
-defmodule FactTest do
+defmodule FactoidTest do
   use ExUnit.Case
-  use Fact, repo: Fact.Repo
+  use Factoid, repo: Factoid.Repo
 
   alias Ecto.UUID
-  alias Fact.Repo
-  alias Fact.Schemas.Employee
-  alias Fact.Schemas.User
+  alias Factoid.Repo
+  alias Factoid.Schemas.Employee
+  alias Factoid.Schemas.User
 
   def build(:user) do
     %User{
