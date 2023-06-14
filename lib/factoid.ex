@@ -62,7 +62,7 @@ defmodule Factoid do
         factory_name
         |> build(attrs)
         |> @repo.insert!(returning: true)
-        |> clear_associations()
+        |> drop_associations()
       end
 
       def insert(factory_name, attrs) when is_list(attrs),
@@ -82,7 +82,11 @@ defmodule Factoid do
     end
   end
 
-  def clear_associations(%{__struct__: struct} = schema) do
+  @doc """
+  Drops all associations in the record.
+  """
+  @spec drop_associations(record()) :: record()
+  def drop_associations(%{__struct__: struct} = schema) do
     struct.__schema__(:associations)
     |> Enum.reduce(schema, fn association, schema ->
       %{schema | association => build_not_loaded(struct, association)}
