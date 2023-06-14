@@ -1,4 +1,4 @@
-defmodule Fact.Repo.Migrations.CreateUsersTable do
+defmodule Factoid.Repo.Migrations.CreateUsersTable do
   use Ecto.Migration
 
   def change do

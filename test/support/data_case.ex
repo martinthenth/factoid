@@ -1,4 +1,4 @@
-defmodule Fact.DataCase do
+defmodule Factoid.DataCase do
   @moduledoc false
 
   use ExUnit.CaseTemplate
@@ -7,23 +7,23 @@ defmodule Fact.DataCase do
 
   using do
     quote do
-      alias Fact.Repo
-
       import Ecto
       import Ecto.Changeset
       import Ecto.Query
-      import Fact.DataCase
+      import Factoid.DataCase
+
+      alias Factoid.Repo
     end
   end
 
   setup tags do
-    Fact.DataCase.setup_sandbox(tags)
+    Factoid.DataCase.setup_sandbox(tags)
     :ok
   end
 
   @doc false
   def setup_sandbox(tags) do
-    pid = Sandbox.start_owner!(Fact.Repo, shared: not tags[:async])
+    pid = Sandbox.start_owner!(Factoid.Repo, shared: not tags[:async])
     on_exit(fn -> Sandbox.stop_owner(pid) end)
   end
 

@@ -1,7 +1,7 @@
-Fact.Repo.start_link()
+Factoid.Repo.start_link()
 ExUnit.start()
 
-defmodule Fact.Schemas.User do
+defmodule Factoid.Schemas.User do
   use Ecto.Schema
 
   @primary_key {:id, :binary_id, autogenerate: true}
@@ -16,10 +16,10 @@ defmodule Fact.Schemas.User do
   end
 end
 
-defmodule Fact.Schemas.Employee do
+defmodule Factoid.Schemas.Employee do
   use Ecto.Schema
 
-  alias Fact.Schemas.User
+  alias Factoid.Schemas.User
 
   @primary_key {:id, :binary_id, autogenerate: true}
   @foreign_key_type :binary_id

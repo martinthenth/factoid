@@ -1,6 +1,6 @@
-defmodule Fact do
+defmodule Factoid do
   @moduledoc ~S"""
-  Documentation for `Fact`.
+  Documentation for `Factoid`.
   """
 
   @typedoc false
@@ -33,7 +33,7 @@ defmodule Fact do
   @doc false
   defmacro __using__(opts) do
     quote bind_quoted: [opts: opts] do
-      import Fact
+      import Factoid
 
       @repo Keyword.get(opts, :repo)
 
