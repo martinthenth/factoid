@@ -105,7 +105,7 @@ defmodule Factoid do
   @doc false
   defmacro __using__(opts) do
     quote bind_quoted: [opts: opts] do
-      import Factoid
+      import Factoid, only: [insert: 4]
 
       @repo Keyword.get(opts, :repo)
 
@@ -125,6 +125,16 @@ defmodule Factoid do
       def insert(factory_name, attrs \\ %{}) do
         insert(@repo, factory_name, &build/2, attrs)
       end
+
+      @doc """
+      Generates a systemically unique integer.
+      """
+      def unique_integer, do: Factoid.unique_integer()
+
+      @doc """
+      Generates a UUID.
+      """
+      def unique_uuid, do: Factoid.unique_uuid()
     end
   end
 
